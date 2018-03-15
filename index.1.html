@@ -167,16 +167,36 @@
             $("#prize-time").text(date.toLocaleString());
         });
     }
+    
+    function getTimestamp(number) {
+        web3.eth.getBlock(number, function(error, block) {
+            console.log('blockInfo is: ' + block.timestamp);
+            var date = new Date();
+            date.setTime(block.timestamp * 1000);
+            console.log(date.toLocaleString());
+            $("#prize-time").text(date.toLocaleString());
+        });
+    }
 
-    function getBlockTime() {
-        account = web3.eth.getBalance("0x2f7f71a4bc310b77f1d16ed6de3829fc5d4202d0");
+    // 注意web3 的默认的回调格式
+    function getBalance() {
+        account = web3.eth.getBalance("0x2f7f71a4bc310b77f1d16ed6de3829fc5d4202d0",        
+        function(error, result) {
+            if(!error){
+                console.log(result);
+                $("#prize-time").text(result);
+            }
+            else {
+                console.error(error);
+            }
+        });
         
-        $("#prize-time").text(account);
         
     }
     // getCurrentNum();
     // getCurrentPeriod();
 
+    // 初始化 全局web3
     if (typeof web3 !== 'undefined') { 
         web3 = new Web3(web3.currentProvider); 
     } 
@@ -186,8 +206,9 @@
         console.log("OK");
     }
 
-    console.log(web3.eth.accounts);
-    getBlockTime();
+    // console.log(web3.eth.accounts);
+    getBalance();
+    getTimestamp(1);
 </script>
 
 </body>
